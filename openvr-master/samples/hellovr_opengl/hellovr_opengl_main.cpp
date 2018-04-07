@@ -113,7 +113,7 @@ public:
 	void printPositionalData();
 
 
-	void DataSend();
+//	void DataSend();
 
 
 	void RunMainLoop();
@@ -771,7 +771,41 @@ void CMainApplication::printPositionalData()
 				case vr::TrackedControllerRole_LeftHand:
 				case vr::TrackedControllerRole_RightHand:
 					printDevicePositionalData(whichHand.c_str(), poseMatrix, position, quaternion);
-					//
+
+
+
+
+					//Serial Port Output
+
+
+
+					SerialPort arduino(port_name);
+					if (arduino.isConnected()) cout << "Connection Established" << endl;
+					else cout << "ERROR, check port name";
+
+					while (arduino.isConnected()) {
+						cout << "Write something: \n";
+						std::string input_string;
+						//Getting input
+						getline(cin, input_string);
+						//Creating a c string
+						char *c_string = new char[input_string.size() + 1];
+						//copying the std::string to c string
+						std::copy(input_string.begin(), input_string.end(), c_string);
+						//Adding the delimiter
+						c_string[input_string.size()] = '\n';
+						//Writing string to arduino
+						arduino.writeSerialPort(c_string, MAX_DATA_LENGTH);
+						//Getting reply from arduino
+						arduino.readSerialPort(output, MAX_DATA_LENGTH);
+						//printing the output
+						puts(output);
+						//freeing c_string memory
+						delete[] c_string;
+					}
+
+
+
 
 
 
@@ -786,48 +820,48 @@ void CMainApplication::printPositionalData()
 
 }
 
-
-
-//-----------------------------------------------------------------------------
-// Purpose:Send Data to Arduino
 //
-// Writen By ZhangTingliang
-//-----------------------------------------------------------------------------
-
-void CMainApplication::DataSend()
-{
-
-	SerialPort arduino(port_name);
-	if (arduino.isConnected()) cout << "Connection Established" << endl;
-	else cout << "ERROR, check port name";
-
-	while (arduino.isConnected()) {
-		cout << "Write something: \n";
-		std::string input_string;
-		//Getting input
-		getline(cin, input_string);
-
-		input_string.c_str();
-		//Creating a c string
-		char *c_string = new char[input_string.size() + 1];
-		//copying the std::string to c string
-		std::copy(input_string.begin(), input_string.end(), c_string);
-		//Adding the delimiter
-		c_string[input_string.size()] = '\n';
-		//Writing string to arduino
-		arduino.writeSerialPort(c_string, MAX_DATA_LENGTH);
-		//Getting reply from arduino
-		arduino.readSerialPort(output, MAX_DATA_LENGTH);
-		//printing the output
-		puts(output);
-		//freeing c_string memory
-		delete[] c_string;
-	}
-
-
-}
-
-
+//
+////-----------------------------------------------------------------------------
+//// Purpose:Send Data to Arduino
+////
+//// Writen By ZhangTingliang
+////-----------------------------------------------------------------------------
+//
+//void CMainApplication::DataSend()
+//{
+//
+//	SerialPort arduino(port_name);
+//	if (arduino.isConnected()) cout << "Connection Established" << endl;
+//	else cout << "ERROR, check port name";
+//
+//	while (arduino.isConnected()) {
+//		cout << "Write something: \n";
+//		std::string input_string;
+//		//Getting input
+//		getline(cin, input_string);
+//
+//		input_string.c_str();
+//		//Creating a c string
+//		char *c_string = new char[input_string.size() + 1];
+//		//copying the std::string to c string
+//		std::copy(input_string.begin(), input_string.end(), c_string);
+//		//Adding the delimiter
+//		c_string[input_string.size()] = '\n';
+//		//Writing string to arduino
+//		arduino.writeSerialPort(c_string, MAX_DATA_LENGTH);
+//		//Getting reply from arduino
+//		arduino.readSerialPort(output, MAX_DATA_LENGTH);
+//		//printing the output
+//		puts(output);
+//		//freeing c_string memory
+//		delete[] c_string;
+//	}
+//
+//
+//}
+//
+//
 
 
 
